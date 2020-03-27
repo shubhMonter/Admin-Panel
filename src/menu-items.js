@@ -12,6 +12,13 @@ export default {
                     type: 'item',
                     url: '/dashboard/default',
                     icon: 'feather icon-home',
+                },
+                {
+                    id: 'edit-data',
+                    title: 'Edit Data',
+                    type: 'item',
+                    url: '/edit-data',
+                    icon: 'feather icon-edit',
                 }
             ]
         },
