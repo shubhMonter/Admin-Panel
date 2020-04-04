@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Row, Col, Table } from "react-bootstrap";
+import { Row, Col, Table, Button } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import classes from "./Doctor.module.scss";
 // import { Table, Divider, Tag } from "antd";
@@ -12,6 +12,7 @@ import axios from "axios";
 class SamplePage extends Component {
 	state = {
 		loading: true,
+		toggle: false,
 	};
 	componentDidMount = () => {
 		console.log("sending");
@@ -35,6 +36,12 @@ class SamplePage extends Component {
 			console.log(this.props.doctors);
 		});
 	};
+
+	toggleHandler = () => {
+		this.setState({
+			toggle: true,
+		});
+	};
 	render() {
 		let data = this.props.doctors.map((elem, index) => {
 			return (
@@ -48,37 +55,46 @@ class SamplePage extends Component {
 		});
 		return (
 			<div>
-				<Table striped bordered hover>
-					<thead>
-						<tr>
-							<th>#</th>
-							<th>Name</th>
-							<th>npi</th>
-							<th>Specialty</th>
-						</tr>
-					</thead>
-					<tbody>
-						{this.state.loading ? (
-							<tr>
-								<td>"Loading"</td>
-							</tr>
-						) : (
-							data
-						)}
-					</tbody>
-				</Table>
-				<Pagination className={classes.pagination}>
-					<Pagination.Item
-						onClick={() => this.pageHandler(this.props.pageNo - 1)}
-					>
-						Prev
-					</Pagination.Item>
-					<Pagination.Item
-						onClick={() => this.pageHandler(this.props.pageNo + 1)}
-					>
-						Next
-					</Pagination.Item>
-				</Pagination>
+				{this.state.toggle ? (
+					<div>'Myform'</div>
+				) : (
+					<div>
+						<Button variant="info" size="lg" block onClick={this.toggleHandler}>
+							Add Doctor
+						</Button>
+						<Table striped bordered hover>
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Name</th>
+									<th>npi</th>
+									<th>Specialty</th>
+								</tr>
+							</thead>
+							<tbody>
+								{this.state.loading ? (
+									<tr>
+										<td>"Loading"</td>
+									</tr>
+								) : (
+									data
+								)}
+							</tbody>
+						</Table>
+						<Pagination className={classes.pagination}>
+							<Pagination.Item
+								onClick={() => this.pageHandler(this.props.pageNo - 1)}
+							>
+								Prev
+							</Pagination.Item>
+							<Pagination.Item
+								onClick={() => this.pageHandler(this.props.pageNo + 1)}
+							>
+								Next
+							</Pagination.Item>
+						</Pagination>
+					</div>
+				)}
 			</div>
 		);
 	}
