@@ -9,41 +9,41 @@ import {
 	Form,
 	InputGroup,
 } from "react-bootstrap";
-import Aux from "../../hoc/_Aux";
+import Aux from "../../../hoc/_Aux";
 import { Formik } from "formik";
-import * as actionCreators from "../../store/actions/editData";
-import SpecialtyForm from "../../App/components/specialtyForm";
+import * as actionCreators from "../../../store/actions/patient";
+import PatientForm from "../../../App/components/PatientForm";
 import cogoToast from "cogo-toast";
-class EditData extends Component {
+class Patient extends Component {
 	state = {
 		specialityList: [],
 		addValue: "",
 		loading: true,
 		toggle: false,
 		editToggle: false,
-		index: 0,
-		text: "Add Specialty",
+		text: "Add Patient",
 		value: {},
+		index: -1,
 	};
 
 	toggleHandler = () => {
 		let text = this.state.text;
 		if (this.state.editToggle === true) {
 			this.setState({
-				text: "Add Specialty",
+				text: "Add Patient",
 				toggle: false,
 				editToggle: false,
 			});
 		} else {
-			if (text === "Add Specialty") {
+			if (text === "Add Patient") {
 				this.setState({
-					text: "See Table",
+					text: "See Patient",
 					toggle: !this.state.toggle,
 					editToggle: false,
 				});
-			} else if (text === "See Table") {
+			} else if (text === "See Patient") {
 				this.setState({
-					text: "Add Specialty",
+					text: "Add Patient",
 					toggle: !this.state.toggle,
 					editToggle: false,
 				});
@@ -68,48 +68,57 @@ class EditData extends Component {
 		}
 	};
 	editHandler = (values) => {
-		console.log(this.state);
-		this.props.updateSpeciality(values, this.state.index).then(() => {
-			this.setState({
-				toggle: false,
-				editToggle: false,
-				index: -1,
-			});
-		});
+		this.props
+			.updatePatient(values, this.state.index)
+			.then(() => {
+				this.setState({
+					toggle: false,
+					editToggle: false,
+				});
+			})
+			.catch((err) => console.log(err));
 	};
 	validateHandler = (values) => {
-		console.log(isNaN(values.default_procedure_id));
 		let errors = {};
 		console.log("validate", values);
-		if (!values.name) {
-			errors.name = "Please enter specialty";
+		if (!values.firstname) {
+			errors.firstname = "Please enter first name";
 		}
-		if (!values.procedure_name) {
-			errors.procedure_name = "Please enter procedure_name ";
-		}
-		if (!values.default_procedure_id) {
-			errors.default_procedure_id = "Please enter default procedure id";
-		}
-		if (values.default_procedure_id && isNaN(values.default_procedure_id)) {
-			errors.default_procedure_id = "Procedure id accepts only number";
-		}
-		if (!values.speciality_id) {
-			errors.speciality_id = "Please enter speciality_id";
-		}
-		if (!values.popular) {
-			errors.popular = "Please enter contact popular";
+		if (!values.lastname) {
+			errors.lastname = "Please enter last_name";
 		}
 
+		if (!values.phone) {
+			errors.phone = "Please enter contact number";
+		}
+		if (!values.email) {
+			errors.email = "Please enter email";
+		}
+		if (!values.Address) {
+			errors.Address = "Please enter Address";
+		}
+		if (!values.city) {
+			errors.city = "Please enter city";
+		}
+		if (!values.state) {
+			errors.state = "Please enter state";
+		}
+		if (!values.country) {
+			errors.country = "Please enter country";
+		}
+		if (!values.zip) {
+			errors.zip = "Please enter zip";
+		}
 		return errors;
 	};
 	submitHandler = (values) => {
 		console.log("submit handler", values);
 		this.props
-			.addSpecialty(values)
+			.addPatient(values)
 			.then((result) => {
 				console.log(result);
 				console.log("done");
-				cogoToast.success("Successfully added specialty!");
+				cogoToast.success("Successfully added patient!");
 				this.toggleHandler();
 			})
 			.catch((err) => {
@@ -125,17 +134,12 @@ class EditData extends Component {
 		if (type === "Delete") {
 			console.log("delete");
 		} else {
-			let curState = { ...this.state };
-			curState.text = "See Table";
-			curState.editToggle = true;
-			curState.index = index;
-			curState.values = this.props.specialty[index];
 			this.setState(
 				{
-					values: this.props.specialty[index],
-					index: index,
+					values: this.props.patient[index],
 					editToggle: true,
-					text: "See Table",
+					text: "See Patient",
+					index: index,
 				},
 				console.log(this.state)
 			);
@@ -143,19 +147,19 @@ class EditData extends Component {
 		}
 	};
 	componentDidMount = () => {
-		this.props.getSpecialty().then(() => {
+		this.props.getPatient().then(() => {
 			this.setState({ loading: false });
 		});
 	};
 
 	render() {
-		let data = this.props.specialty.map((item, index) => {
+		let data = this.props.patient.map((item, index) => {
 			return (
 				<tr key={index}>
 					<td>{index + 1}</td>
-					<td>{item.name}</td>
-					<td>{item.speciality_id}</td>
-					<td>{item.procedure_name}</td>
+					<td>{item.firstname + " " + item.lastname}</td>
+					<td>{item.email}</td>
+					<td>{item.phone}</td>
 					<td>
 						<Button
 							size="sm"
@@ -182,7 +186,7 @@ class EditData extends Component {
 					<Col>
 						<Card>
 							<Card.Header>
-								<Card.Title as="h5">Speciality</Card.Title>
+								<Card.Title as="h5">Patient</Card.Title>
 							</Card.Header>
 							<Card.Body>
 								<div>
@@ -196,28 +200,28 @@ class EditData extends Component {
 									</Button>
 									{this.state.toggle ? (
 										//For new patient
-										<SpecialtyForm
+										<PatientForm
 											validateHandler={this.validateHandler}
 											submitHandler={this.submitHandler}
-											specialtyValues={{}}
+											patientValues={{}}
 											text={"Submit"}
 										/>
 									) : this.state.editToggle ? (
 										//For edit
-										<SpecialtyForm
+										<PatientForm
 											validateHandler={this.validateHandler}
 											submitHandler={this.editHandler}
-											specialtyValues={this.state.values}
+											patientValues={this.state.values}
 											text={"Update"}
 										/>
 									) : (
-										<Table striped bordered hover size="sm">
+										<Table striped bordered hover>
 											<thead>
 												<tr>
 													<th>#</th>
 													<th>Name</th>
-													<th>Specialty ID</th>
-													<th>Procedure</th>
+													<th>Email</th>
+													<th>Phone</th>
 													<th>Action</th>
 												</tr>
 											</thead>
@@ -244,15 +248,15 @@ class EditData extends Component {
 
 const mapStateToProps = (state) => {
 	return {
-		specialty: state.editDataReducer.specialty,
+		patient: state.patientReducer.patient,
 	};
 };
 const mapDispatchToProps = (dispatch) => {
 	return {
-		getSpecialty: () => dispatch(actionCreators.getSpecialty()),
-		addSpecialty: (data) => dispatch(actionCreators.addSpecialty(data)),
-		updateSpeciality: (data, index) =>
-			dispatch(actionCreators.updateSpecialty(data, index)),
+		getPatient: () => dispatch(actionCreators.getPatient()),
+		addPatient: (data) => dispatch(actionCreators.addPatient(data)),
+		updatePatient: (data, index) =>
+			dispatch(actionCreators.updatePatient(data, index)),
 	};
 };
-export default connect(mapStateToProps, mapDispatchToProps)(EditData);
+export default connect(mapStateToProps, mapDispatchToProps)(Patient);

@@ -4,7 +4,7 @@ import Axios from "axios";
 export const getDoctors = (pageNo, size) => {
 	console.log("get doctors actioncreator");
 	return (dispatch) =>
-		Axios.post("/doctors/searchlite", {
+		Axios.post("/admin/doctors/searchlite", {
 			match: JSON.stringify({}),
 			pageNo: pageNo,
 			size: size,
@@ -19,7 +19,7 @@ export const getDoctors = (pageNo, size) => {
 export const pagination = (pageNo, size) => {
 	console.log("g");
 	return (dispatch) =>
-		Axios.post("/doctors/searchlite", {
+		Axios.post("/admin/doctors/searchlite", {
 			match: JSON.stringify({}),
 			pageNo: pageNo,
 			size: size,

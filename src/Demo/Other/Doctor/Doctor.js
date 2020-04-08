@@ -1,30 +1,20 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-	Row,
-	Col,
-	Table,
-	Button,
-	Form,
-	Card,
-	InputGroup,
-	Nav,
-} from "react-bootstrap";
+import { Col, Table, Button, Form, Card, Nav } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import { Formik } from "formik";
 import classes from "./Doctor.module.scss";
-import * as yup from "yup";
-import { render } from "react-dom";
+
 // import { Table, Divider, Tag } from "antd";
 // import Aux from "../../hoc/_Aux";
 // import Card from "../../App/components/MainCard";
 import * as actionCreators from "../../../store/actions/doctor";
 import Axios from "axios";
 
-class SamplePage extends Component {
+class Doctor extends Component {
 	state = {
 		loading: true,
-		toggle: true,
+		toggle: false,
 		file: null,
 		toggleForm: false,
 	};
@@ -102,7 +92,7 @@ class SamplePage extends Component {
 	};
 	submitHandler = (values) => {
 		console.log(values);
-		Axios.post("/doctors/registerByAdmin", values)
+		Axios.post("/admin/doctors/register", values)
 			.then(() => console.log("Succesfully added doctor"))
 			.catch((err) => console.log(err));
 	};
@@ -122,7 +112,7 @@ class SamplePage extends Component {
 			},
 		};
 		console.log(formData, this.state.file);
-		Axios.post("/doctors/addDoctorsByAdmin", formData, config).then((resp) => {
+		Axios.post("/admin/doctors/addCSV", formData, config).then((resp) => {
 			console.log(resp);
 		});
 	};
@@ -488,4 +478,4 @@ const mapDispatchToProps = (dispatch) => {
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SamplePage);
+export default connect(mapStateToProps, mapDispatchToProps)(Doctor);

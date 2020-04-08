@@ -1,5 +1,4 @@
 import * as actionTypes from "../actions/actions";
-import config from "../../config";
 
 const initialState = {
 	// static can't changeS

@@ -11,16 +11,9 @@ export default {
 					title: "Dashboard",
 					type: "item",
 					url: "/dashboard/default",
-					icon: "feather icon-home"
+					icon: "feather icon-home",
 				},
-				{
-					id: "edit-data",
-					title: "Edit Data",
-					type: "item",
-					url: "/edit-data",
-					icon: "feather icon-edit"
-				}
-			]
+			],
 		},
 		{
 			id: "ui-element",
@@ -38,41 +31,41 @@ export default {
 							id: "button",
 							title: "Button",
 							type: "item",
-							url: "/basic/button"
+							url: "/basic/button",
 						},
 						{
 							id: "badges",
 							title: "Badges",
 							type: "item",
-							url: "/basic/badges"
+							url: "/basic/badges",
 						},
 						{
 							id: "breadcrumb-pagination",
 							title: "Breadcrumb & Pagination",
 							type: "item",
-							url: "/basic/breadcrumb-paging"
+							url: "/basic/breadcrumb-paging",
 						},
 						{
 							id: "collapse",
 							title: "Collapse",
 							type: "item",
-							url: "/basic/collapse"
+							url: "/basic/collapse",
 						},
 						{
 							id: "tabs-pills",
 							title: "Tabs & Pills",
 							type: "item",
-							url: "/basic/tabs-pills"
+							url: "/basic/tabs-pills",
 						},
 						{
 							id: "typography",
 							title: "Typography",
 							type: "item",
-							url: "/basic/typography"
-						}
-					]
-				}
-			]
+							url: "/basic/typography",
+						},
+					],
+				},
+			],
 		},
 		{
 			id: "ui-forms",
@@ -85,16 +78,16 @@ export default {
 					title: "Form Elements",
 					type: "item",
 					url: "/forms/form-basic",
-					icon: "feather icon-file-text"
+					icon: "feather icon-file-text",
 				},
 				{
 					id: "bootstrap",
 					title: "Table",
 					type: "item",
 					icon: "feather icon-server",
-					url: "/tables/bootstrap"
-				}
-			]
+					url: "/tables/bootstrap",
+				},
+			],
 		},
 		{
 			id: "chart-maps",
@@ -107,16 +100,16 @@ export default {
 					title: "Charts",
 					type: "item",
 					icon: "feather icon-pie-chart",
-					url: "/charts/nvd3"
+					url: "/charts/nvd3",
 				},
 				{
 					id: "maps",
 					title: "Map",
 					type: "item",
 					icon: "feather icon-map",
-					url: "/maps/google-map"
-				}
-			]
+					url: "/maps/google-map",
+				},
+			],
 		},
 		{
 			id: "pages",
@@ -131,7 +124,7 @@ export default {
 					icon: "feather icon-lock",
 					badge: {
 						title: "New",
-						type: "label-danger"
+						type: "label-danger",
 					},
 					children: [
 						{
@@ -140,7 +133,7 @@ export default {
 							type: "item",
 							url: "/auth/signup-1",
 							target: true,
-							breadcrumbs: false
+							breadcrumbs: false,
 						},
 						{
 							id: "signin-1",
@@ -148,9 +141,9 @@ export default {
 							type: "item",
 							url: "/auth/signin-1",
 							target: true,
-							breadcrumbs: false
-						}
-					]
+							breadcrumbs: false,
+						},
+					],
 				},
 				{
 					id: "doctor-page",
@@ -158,16 +151,29 @@ export default {
 					type: "item",
 					url: "/doctor",
 					classes: "nav-item",
-					icon: "feather icon-sidebar"
+					icon: "feather icon-sidebar",
 				},
-
+				{
+					id: "patient-page",
+					title: "Patient",
+					type: "item",
+					url: "/patient",
+					icon: "feather icon-edit",
+				},
+				{
+					id: "edit-data",
+					title: "Specialty",
+					type: "item",
+					url: "/edit-data",
+					icon: "feather icon-edit",
+				},
 				{
 					id: "sample-page",
 					title: "Sample Page",
 					type: "item",
 					url: "/sample-page",
 					classes: "nav-item",
-					icon: "feather icon-sidebar"
+					icon: "feather icon-sidebar",
 				},
 				{
 					id: "docs",
@@ -175,7 +181,7 @@ export default {
 					type: "item",
 					url: "/docs",
 					classes: "nav-item",
-					icon: "feather icon-help-circle"
+					icon: "feather icon-help-circle",
 				},
 				{
 					id: "menu-level",
@@ -187,7 +193,7 @@ export default {
 							id: "menu-level-1.1",
 							title: "Menu Level 1.1",
 							type: "item",
-							url: "#!"
+							url: "#!",
 						},
 						{
 							id: "menu-level-1.2",
@@ -198,7 +204,7 @@ export default {
 									id: "menu-level-2.1",
 									title: "Menu Level 2.1",
 									type: "item",
-									url: "#"
+									url: "#",
 								},
 								{
 									id: "menu-level-2.2",
@@ -209,19 +215,19 @@ export default {
 											id: "menu-level-3.1",
 											title: "Menu Level 3.1",
 											type: "item",
-											url: "#"
+											url: "#",
 										},
 										{
 											id: "menu-level-3.2",
 											title: "Menu Level 3.2",
 											type: "item",
-											url: "#"
-										}
-									]
-								}
-							]
-						}
-					]
+											url: "#",
+										},
+									],
+								},
+							],
+						},
+					],
 				},
 				{
 					id: "disabled-menu",
@@ -229,8 +235,8 @@ export default {
 					type: "item",
 					url: "#",
 					classes: "nav-item disabled",
-					icon: "feather icon-power"
-				}
+					icon: "feather icon-power",
+				},
 				/*{
                     id: 'buy-now',
                     title: 'Buy Now',
@@ -245,7 +251,7 @@ export default {
                         type: 'label-primary'
                     }
                 }*/
-			]
-		}
-	]
+			],
+		},
+	],
 };

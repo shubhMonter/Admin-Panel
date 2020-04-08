@@ -37,7 +37,10 @@ const Nvd3Chart = React.lazy(() => import("./Demo/Charts/Nvd3Chart/index"));
 const GoogleMap = React.lazy(() => import("./Demo/Maps/GoogleMap/index"));
 
 const OtherSamplePage = React.lazy(() => import("./Demo/Other/SamplePage"));
+
 const DoctorPage = React.lazy(() => import("./Demo/Other/Doctor/Doctor"));
+
+const PatientPage = React.lazy(() => import("./Demo/Other/Patient/Patient"));
 
 const OtherDocs = React.lazy(() => import("./Demo/Other/Docs"));
 
@@ -116,6 +119,12 @@ const routes = [
 		component: OtherSamplePage,
 	},
 	{ path: "/doctor", exact: true, name: "Sample Page", component: DoctorPage },
+	{
+		path: "/patient",
+		exact: true,
+		name: "Sample Page",
+		component: PatientPage,
+	},
 	{ path: "/docs", exact: true, name: "Documentation", component: OtherDocs },
 ];
 
