@@ -44,6 +44,8 @@ const PatientPage = React.lazy(() => import("./Demo/Other/Patient/Patient"));
 
 const OtherDocs = React.lazy(() => import("./Demo/Other/Docs"));
 
+const PaymentPage = React.lazy(() => import("./Demo/Other/Payment/Payment"));
+
 const routes = [
 	{
 		path: "/dashboard/default",
@@ -124,6 +126,12 @@ const routes = [
 		exact: true,
 		name: "Sample Page",
 		component: PatientPage,
+	},
+	{
+		path: "/payment",
+		exact: true,
+		name: "Payment Page",
+		component: PaymentPage,
 	},
 	{ path: "/docs", exact: true, name: "Documentation", component: OtherDocs },
 ];

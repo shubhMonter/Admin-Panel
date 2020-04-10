@@ -9,7 +9,7 @@ const reducer = (state = initialState, action) => {
 	switch (action.type) {
 		case actionTypes.GET_PAYMENT:
 			return {
-				patient: action.payload,
+				payment: action.payload,
 			};
 
 		default:

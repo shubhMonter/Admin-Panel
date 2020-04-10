@@ -168,6 +168,13 @@ export default {
 					icon: "feather icon-edit",
 				},
 				{
+					id: "payment",
+					title: "Payment",
+					type: "item",
+					url: "/payment",
+					icon: "feather icon-edit",
+				},
+				{
 					id: "sample-page",
 					title: "Sample Page",
 					type: "item",

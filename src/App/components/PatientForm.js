@@ -28,29 +28,29 @@ export default class PatientForm extends Component {
 								<Form.Control
 									required
 									type="text"
-									name="firstname"
-									value={values.firstname}
+									name="first_name"
+									value={values.first_name}
 									onChange={handleChange}
-									isValid={touched.firstname && !errors.firstname}
-									isInvalid={touched.firstname && errors.firstname}
+									isValid={touched.first_name && !errors.first_name}
+									isInvalid={touched.first_name && errors.first_name}
 								/>
 								<Form.Control.Feedback type="invalid">
-									{errors.firstname}
+									{errors.first_name}
 								</Form.Control.Feedback>
 							</Form.Group>
 							<Form.Group as={Col} md="6" controlId="validationFormik02">
 								<Form.Label>Last name</Form.Label>
 								<Form.Control
 									type="text"
-									name="lastname"
-									value={values.lastname}
+									name="last_name"
+									value={values.last_name}
 									onChange={handleChange}
-									isValid={touched.lastname && !errors.lastname}
-									isInvalid={errors.lastname}
+									isValid={touched.last_name && !errors.last_name}
+									isInvalid={errors.last_name}
 								/>
 
 								<Form.Control.Feedback type="invalid">
-									{errors.lastname}
+									{errors.last_name}
 								</Form.Control.Feedback>
 							</Form.Group>
 						</Form.Row>

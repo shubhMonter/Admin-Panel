@@ -10,7 +10,7 @@ import {
 	InputGroup,
 } from "react-bootstrap";
 import Aux from "../../../hoc/_Aux";
-import * as actionCreators from "../../../store/actions/patient";
+import * as actionCreators from "../../../store/actions/payment";
 import cogoToast from "cogo-toast";
 class Payment extends Component {
 	state = {
@@ -24,13 +24,14 @@ class Payment extends Component {
 	};
 
 	render() {
-		let data = this.props.Payment.map((item, index) => {
+		let data = (this.props.payment || []).map((item, index) => {
 			return (
 				<tr key={index}>
 					<td>{index + 1}</td>
-					<td>{item.firstname + " " + item.lastname}</td>
-					<td>{item.email}</td>
-					<td>{item.phone}</td>
+					<td>{item.patient.first_name + " " + item.last_name}</td>
+					<td>{item.doctor.first_name + " " + item.last_name}</td>
+					<td>{item.transactionId}</td>
+					<td>{item.amount}</td>
 				</tr>
 			);
 		});
@@ -49,10 +50,10 @@ class Payment extends Component {
 										<thead>
 											<tr>
 												<th>#</th>
-												<th>Name</th>
-												<th>Email</th>
-												<th>Phone</th>
-												<th>Action</th>
+												<th>Patient</th>
+												<th>Doctor</th>
+												<th>Transaction ID</th>
+												<th>Amount</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -77,7 +78,7 @@ class Payment extends Component {
 
 const mapStateToProps = (state) => {
 	return {
-		payment: state.PaymentReducer.payment,
+		payment: state.paymentReducer.payment,
 	};
 };
 const mapDispatchToProps = (dispatch) => {

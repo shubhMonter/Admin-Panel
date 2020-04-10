@@ -81,11 +81,11 @@ class Patient extends Component {
 	validateHandler = (values) => {
 		let errors = {};
 		console.log("validate", values);
-		if (!values.firstname) {
-			errors.firstname = "Please enter first name";
+		if (!values.first_name) {
+			errors.first_name = "Please enter first name";
 		}
-		if (!values.lastname) {
-			errors.lastname = "Please enter last_name";
+		if (!values.last_name) {
+			errors.last_name = "Please enter last_name";
 		}
 
 		if (!values.phone) {
@@ -157,7 +157,7 @@ class Patient extends Component {
 			return (
 				<tr key={index}>
 					<td>{index + 1}</td>
-					<td>{item.firstname + " " + item.lastname}</td>
+					<td>{item.first_name + " " + item.last_name}</td>
 					<td>{item.email}</td>
 					<td>{item.phone}</td>
 					<td>
