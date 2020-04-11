@@ -8,6 +8,7 @@ import {
 	Button,
 	Form,
 	InputGroup,
+	Pagination,
 } from "react-bootstrap";
 import Aux from "../../../hoc/_Aux";
 import * as actionCreators from "../../../store/actions/payment";
@@ -18,16 +19,29 @@ class Payment extends Component {
 	};
 
 	componentDidMount = () => {
-		this.props.getPayment().then(() => {
-			this.setState({ loading: false });
-		});
+		this.props
+			.getPayment(this.props.pageNo, this.props.size)
+			.then((result) => {
+				cogoToast.success("Fetched Payments");
+				this.setState({ loading: false });
+			})
+			.catch((err) => cogoToast.error(err));
 	};
-
+	pageHandler = (page) => {
+		console.log("page", page);
+		this.props
+			.getPayment(page, this.props.size)
+			.then((result) => {
+				cogoToast.success("Fetched Payments");
+				this.setState({ loading: false });
+			})
+			.catch((err) => cogoToast.error(err));
+	};
 	render() {
 		let data = (this.props.payment || []).map((item, index) => {
 			return (
 				<tr key={index}>
-					<td>{index + 1}</td>
+					<td>{this.props.size * this.props.pageNo + index + 1}</td>
 					<td>{item.patient.first_name + " " + item.last_name}</td>
 					<td>{item.doctor.first_name + " " + item.last_name}</td>
 					<td>{item.transactionId}</td>
@@ -66,6 +80,18 @@ class Payment extends Component {
 											)}
 										</tbody>
 									</Table>
+									<Pagination>
+										<Pagination.Item
+											onClick={() => this.pageHandler(this.props.pageNo - 1)}
+										>
+											Prev
+										</Pagination.Item>
+										<Pagination.Item
+											onClick={() => this.pageHandler(this.props.pageNo + 1)}
+										>
+											Next
+										</Pagination.Item>
+									</Pagination>
 								</div>
 							</Card.Body>
 						</Card>
@@ -79,11 +105,14 @@ class Payment extends Component {
 const mapStateToProps = (state) => {
 	return {
 		payment: state.paymentReducer.payment,
+		pageNo: state.paymentReducer.pageNo,
+		size: state.paymentReducer.size,
 	};
 };
 const mapDispatchToProps = (dispatch) => {
 	return {
-		getPayment: () => dispatch(actionCreators.getPayment()),
+		getPayment: (pageNo, size) =>
+			dispatch(actionCreators.getPayment(pageNo, size)),
 	};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Payment);

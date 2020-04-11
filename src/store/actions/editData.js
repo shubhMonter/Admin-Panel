@@ -4,11 +4,13 @@ import Axios from "axios";
 export const getSpecialty = (pageNo, size) => {
 	console.log("get specialty actioncreator");
 	return (dispatch) =>
-		Axios.get("/admin/specialty/get").then((result) => {
+		Axios.post("/admin/specialty/get", { pageNo, size }).then((result) => {
 			console.log("Data got", result.data.data);
 			dispatch({
 				type: actionTypes.GET_SPECIALTY,
 				payload: result.data.data,
+				pageNo,
+				size,
 			});
 		});
 };

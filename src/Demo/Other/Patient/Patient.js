@@ -6,6 +6,7 @@ import {
 	Card,
 	Table,
 	Button,
+	Pagination,
 	Form,
 	InputGroup,
 } from "react-bootstrap";
@@ -16,7 +17,6 @@ import PatientForm from "../../../App/components/PatientForm";
 import cogoToast from "cogo-toast";
 class Patient extends Component {
 	state = {
-		specialityList: [],
 		addValue: "",
 		loading: true,
 		toggle: false,
@@ -50,11 +50,6 @@ class Patient extends Component {
 			}
 		}
 	};
-	deleteHandler = (index) => {
-		let specialityList = [...this.state.specialityList];
-		specialityList.splice(index, 1);
-		this.setState({ specialityList });
-	};
 
 	addValueHandler = () => {
 		console.log("i came here");
@@ -71,12 +66,13 @@ class Patient extends Component {
 		this.props
 			.updatePatient(values, this.state.index)
 			.then(() => {
+				cogoToast.success("Successfully updated patient!");
 				this.setState({
 					toggle: false,
 					editToggle: false,
 				});
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => cogoToast.error(err));
 	};
 	validateHandler = (values) => {
 		let errors = {};
@@ -123,7 +119,7 @@ class Patient extends Component {
 			})
 			.catch((err) => {
 				console.log("error", err);
-				cogoToast.info(err);
+				cogoToast.error(err);
 			});
 		// Axios.post("/admin/addSpecialty", values)
 		// 	.then(() => console.log("Succesfully added specialty"))
@@ -147,16 +143,30 @@ class Patient extends Component {
 		}
 	};
 	componentDidMount = () => {
-		this.props.getPatient().then(() => {
-			this.setState({ loading: false });
-		});
+		console.log(this.props.pageNo, this.props.size);
+		this.props
+			.getPatient(this.props.pageNo, this.props.size)
+			.then(() => {
+				cogoToast.success("Fetched Patients");
+				this.setState({ loading: false });
+			})
+			.catch((err) => cogoToast.error(err));
 	};
-
+	pageHandler = (page) => {
+		console.log("page", page);
+		this.props
+			.getPatient(page, this.props.size)
+			.then(() => {
+				cogoToast.success("Fetched Patients");
+				this.setState({ loading: false });
+			})
+			.catch((err) => cogoToast.error(err));
+	};
 	render() {
 		let data = this.props.patient.map((item, index) => {
 			return (
 				<tr key={index}>
-					<td>{index + 1}</td>
+					<td>{this.props.pageNo * this.props.size + index + 1}</td>
 					<td>{item.first_name + " " + item.last_name}</td>
 					<td>{item.email}</td>
 					<td>{item.phone}</td>
@@ -215,26 +225,44 @@ class Patient extends Component {
 											text={"Update"}
 										/>
 									) : (
-										<Table striped bordered hover>
-											<thead>
-												<tr>
-													<th>#</th>
-													<th>Name</th>
-													<th>Email</th>
-													<th>Phone</th>
-													<th>Action</th>
-												</tr>
-											</thead>
-											<tbody>
-												{this.state.loading ? (
+										<div>
+											<Table striped bordered hover>
+												<thead>
 													<tr>
-														<td>"Loading"</td>
+														<th>#</th>
+														<th>Name</th>
+														<th>Email</th>
+														<th>Phone</th>
+														<th>Action</th>
 													</tr>
-												) : (
-													data
-												)}
-											</tbody>
-										</Table>
+												</thead>
+												<tbody>
+													{this.state.loading ? (
+														<tr>
+															<td>"Loading"</td>
+														</tr>
+													) : (
+														data
+													)}
+												</tbody>
+											</Table>
+											<Pagination>
+												<Pagination.Item
+													onClick={() =>
+														this.pageHandler(this.props.pageNo - 1)
+													}
+												>
+													Prev
+												</Pagination.Item>
+												<Pagination.Item
+													onClick={() =>
+														this.pageHandler(this.props.pageNo + 1)
+													}
+												>
+													Next
+												</Pagination.Item>
+											</Pagination>
+										</div>
 									)}
 								</div>
 							</Card.Body>
@@ -249,11 +277,14 @@ class Patient extends Component {
 const mapStateToProps = (state) => {
 	return {
 		patient: state.patientReducer.patient,
+		pageNo: state.patientReducer.pageNo,
+		size: state.patientReducer.size,
 	};
 };
 const mapDispatchToProps = (dispatch) => {
 	return {
-		getPatient: () => dispatch(actionCreators.getPatient()),
+		getPatient: (pageNo, size) =>
+			dispatch(actionCreators.getPatient(pageNo, size)),
 		addPatient: (data) => dispatch(actionCreators.addPatient(data)),
 		updatePatient: (data, index) =>
 			dispatch(actionCreators.updatePatient(data, index)),

@@ -9,7 +9,7 @@ import App from "./App/index";
 import * as serviceWorker from "./serviceWorker";
 import defaultreducer from "./store/reducers/reducer";
 import doctorReducer from "./store/reducers/doctorReducer";
-import editDataReducer from "./store/reducers/editDataReducer";
+import specialtyReducer from "./store/reducers/specialtyReducer";
 import patientReducer from "./store/reducers/patientReducer";
 import paymentReducer from "./store/reducers/paymentReducer";
 import config from "./config";
@@ -17,7 +17,7 @@ import config from "./config";
 const rootReducer = combineReducers({
 	paymentReducer: paymentReducer,
 	patientReducer: patientReducer,
-	editDataReducer: editDataReducer,
+	specialtyReducer: specialtyReducer,
 	doctorReducer: doctorReducer,
 	withTheme: defaultreducer,
 });

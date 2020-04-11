@@ -4,11 +4,12 @@ import { Col, Table, Button, Form, Card, Nav } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import { Formik } from "formik";
 import classes from "./Doctor.module.scss";
-
+import cogoToast from "cogo-toast";
 // import { Table, Divider, Tag } from "antd";
 // import Aux from "../../hoc/_Aux";
 // import Card from "../../App/components/MainCard";
 import * as actionCreators from "../../../store/actions/doctor";
+import DoctorForm from "../../../App/components/DoctorForm";
 import Axios from "axios";
 
 class Doctor extends Component {
@@ -17,15 +18,69 @@ class Doctor extends Component {
 		toggle: false,
 		file: null,
 		toggleForm: false,
+		index: -1,
+		editToggle: false,
+		text: "Add Doctor",
+		values: {},
 	};
+
+	actionHandler = (id, index, type) => {
+		console.log(this.props.doctors[index]);
+		if (type === "Delete") {
+			console.log("delete");
+		} else {
+			this.setState(
+				{
+					values: this.props.doctors[index],
+					editToggle: true,
+					text: "See Doctors",
+					index: index,
+				},
+				console.log(this.state)
+			);
+			console.log("edit");
+		}
+	};
+
+	toggleHandler = () => {
+		let text = this.state.text;
+		if (this.state.editToggle === true) {
+			this.setState({
+				text: "Add Doctor",
+				toggle: false,
+				editToggle: false,
+			});
+		} else {
+			if (text === "Add Doctor") {
+				this.setState({
+					text: "See Doctor",
+					toggle: !this.state.toggle,
+					editToggle: false,
+				});
+			} else if (text === "See Doctor") {
+				this.setState({
+					text: "Add Doctor",
+					toggle: !this.state.toggle,
+					editToggle: false,
+				});
+			}
+		}
+	};
+
 	componentDidMount = () => {
 		console.log("sending");
-		this.props.getDoctors(this.props.pageNo, this.props.size).then(() => {
-			this.setState({
-				loading: false,
+		this.props
+			.getDoctors(this.props.pageNo, this.props.size)
+			.then(() => {
+				cogoToast.success("Sucessfully fetched doctors");
+				this.setState({
+					loading: false,
+				});
+				// console.log(this.props.doctors);
+			})
+			.catch((err) => {
+				cogoToast.error(err);
 			});
-			console.log(this.props.doctors);
-		});
 		// axios.get("/doctors/get").then((result) => console.log(result));
 	};
 
@@ -33,20 +88,20 @@ class Doctor extends Component {
 		console.log(pageNo);
 		this.setState({ loading: true });
 
-		this.props.nextList(pageNo, this.props.size).then(() => {
-			this.setState({
-				loading: false,
-			});
-			console.log(this.props.doctors);
-		});
+		this.props
+			.nextList(pageNo, this.props.size)
+			.then(() => {
+				cogoToast.success("Successfully fetched Doctors!");
+				this.setState({
+					loading: false,
+				});
+				console.log(this.props.doctors);
+			})
+			.catch((err) => cogoToast.error(err));
 	};
 
-	toggleHandler = () => {
-		this.setState({
-			toggle: true,
-		});
-	};
 	validateHandler = (values) => {
+		console.log(values);
 		let errors = {};
 		console.log("validate", values);
 		if (!values.first_name) {
@@ -92,9 +147,17 @@ class Doctor extends Component {
 	};
 	submitHandler = (values) => {
 		console.log(values);
-		Axios.post("/admin/doctors/register", values)
-			.then(() => console.log("Succesfully added doctor"))
-			.catch((err) => console.log(err));
+		this.props
+			.registerDoctor(values)
+			.then(() => cogoToast.success("Added Doctor successfully"))
+			.catch((err) => cogoToast.error(err));
+	};
+	editHandler = (values) => {
+		console.log(values);
+		this.props
+			.updateDoctor(values, this.state.index)
+			.then(() => cogoToast.success("Updated successfully"))
+			.catch((err) => cogoToast.error(err));
 	};
 	fileChange = (event) => {
 		this.setState({
@@ -112,9 +175,13 @@ class Doctor extends Component {
 			},
 		};
 		console.log(formData, this.state.file);
-		Axios.post("/admin/doctors/addCSV", formData, config).then((resp) => {
-			console.log(resp);
-		});
+		this.props
+			.addDoctorCSV(formData, config)
+			.then((res) => {
+				console.log(res);
+				cogoToast.success("Added Doctors successully");
+			})
+			.catch((err) => cogoToast.error(err));
 	};
 	toggleForm = () => {
 		let form = !this.state.toggleForm;
@@ -122,6 +189,7 @@ class Doctor extends Component {
 			toggleForm: form,
 		});
 	};
+
 	render() {
 		let data = this.props.doctors.map((elem, index) => {
 			return (
@@ -130,11 +198,30 @@ class Doctor extends Component {
 					<td>{elem.basic.name}</td>
 					<td>{elem.npi}</td>
 					<td>{elem.specialty}</td>
+					<td>
+						<Button
+							size="sm"
+							variant="warning"
+							onClick={() => this.actionHandler(elem._id, index, "Edit")}
+						>
+							Edit
+						</Button>
+						<Button
+							size="sm"
+							onClick={() => this.actionHandler(elem._id, index, "Delete")}
+							variant="danger"
+						>
+							Delete
+						</Button>
+					</td>
 				</tr>
 			);
 		});
 		return (
 			<div>
+				<Button variant="info" size="lg" block onClick={this.toggleHandler}>
+					{this.state.text}
+				</Button>
 				{this.state.toggle ? (
 					<div>
 						<Card>
@@ -169,262 +256,26 @@ class Doctor extends Component {
 										</Form.Row>
 									</Form>
 								) : (
-									<Formik
-										validate={this.validateHandler}
-										onSubmit={this.submitHandler}
-										initialValues={{}}
-									>
-										{({
-											handleSubmit,
-											handleChange,
-											handleBlur,
-											values,
-											touched,
-											isValid,
-											errors,
-										}) => (
-											<Form noValidate onSubmit={handleSubmit}>
-												<Form.Row>
-													<Form.Group
-														as={Col}
-														md="6"
-														controlId="validationFormik01"
-													>
-														<Form.Label>First name</Form.Label>
-														<Form.Control
-															required
-															type="text"
-															name="first_name"
-															value={values.first_name}
-															onChange={handleChange}
-															isValid={touched.first_name && !errors.first_name}
-															isInvalid={
-																touched.first_name && errors.first_name
-															}
-														/>
-														<Form.Control.Feedback type="invalid">
-															{errors.first_name}
-														</Form.Control.Feedback>
-													</Form.Group>
-													<Form.Group
-														as={Col}
-														md="6"
-														controlId="validationFormik02"
-													>
-														<Form.Label>Last name</Form.Label>
-														<Form.Control
-															type="text"
-															name="last_name"
-															value={values.last_name}
-															onChange={handleChange}
-															isValid={touched.last_name && !errors.last_name}
-															isInvalid={errors.last_name}
-														/>
-
-														<Form.Control.Feedback type="invalid">
-															{errors.last_name}
-														</Form.Control.Feedback>
-													</Form.Group>
-												</Form.Row>
-												<Form.Row>
-													<Form.Group
-														as={Col}
-														md="6"
-														controlId="validationFormik02"
-													>
-														<Form.Label>Specialty</Form.Label>
-														<Form.Control
-															type="text"
-															name="specialty"
-															value={values.specialty}
-															onChange={handleChange}
-															isValid={touched.specialty && !errors.specialty}
-															isInvalid={errors.specialty}
-														/>
-
-														<Form.Control.Feedback type="invalid">
-															{errors.specialty}
-														</Form.Control.Feedback>
-													</Form.Group>
-
-													<Form.Group
-														as={Col}
-														md="6"
-														controlId="validationFormik02"
-													>
-														<Form.Label>Registration number</Form.Label>
-														<Form.Control
-															type="text"
-															name="registration_number"
-															value={values.registration_number}
-															onChange={handleChange}
-															isValid={
-																touched.registration_number &&
-																!errors.registration_number
-															}
-															isInvalid={errors.registration_number}
-														/>
-
-														<Form.Control.Feedback type="invalid">
-															{errors.registration_number}
-														</Form.Control.Feedback>
-													</Form.Group>
-												</Form.Row>
-												<Form.Row>
-													<Form.Group
-														as={Col}
-														md="6"
-														controlId="validationFormik01"
-													>
-														<Form.Label>Email</Form.Label>
-														<Form.Control
-															type="text"
-															name="email"
-															value={values.email}
-															onChange={handleChange}
-															isValid={touched.email && !errors.email}
-															isInvalid={errors.email}
-														/>
-														<Form.Control.Feedback type="invalid">
-															{errors.email}
-														</Form.Control.Feedback>
-													</Form.Group>
-													<Form.Group
-														as={Col}
-														md="6"
-														controlId="validationFormik01"
-													>
-														<Form.Label>Contact number</Form.Label>
-														<Form.Control
-															type="text"
-															name="phone"
-															value={values.phone}
-															onChange={handleChange}
-															isValid={touched.phone && !errors.phone}
-															isInvalid={errors.phone}
-														/>
-														<Form.Control.Feedback type="invalid">
-															{errors.phone}
-														</Form.Control.Feedback>
-													</Form.Group>
-												</Form.Row>
-												<Form.Row>
-													<Form.Group
-														as={Col}
-														md="8"
-														controlId="validationFormik03"
-													>
-														<Form.Label>Address</Form.Label>
-														<Form.Control
-															type="text"
-															placeholder="address"
-															name="address"
-															value={values.address}
-															onChange={handleChange}
-															isValid={touched.address && !errors.address}
-															isInvalid={errors.address}
-														/>
-
-														<Form.Control.Feedback type="invalid">
-															{errors.address}
-														</Form.Control.Feedback>
-													</Form.Group>
-													<Form.Group
-														as={Col}
-														md="4"
-														controlId="validationFormik04"
-													>
-														<Form.Label>City</Form.Label>
-														<Form.Control
-															type="text"
-															placeholder="city"
-															name="city"
-															value={values.city}
-															onChange={handleChange}
-															isValid={touched.city && !errors.city}
-															isInvalid={errors.city}
-														/>
-														<Form.Control.Feedback type="invalid">
-															{errors.city}
-														</Form.Control.Feedback>
-													</Form.Group>
-												</Form.Row>
-												<Form.Row>
-													<Form.Group
-														as={Col}
-														md="4"
-														controlId="validationFormik05"
-													>
-														<Form.Label>State</Form.Label>
-														<Form.Control
-															type="text"
-															placeholder="state"
-															name="state"
-															value={values.state}
-															onChange={handleChange}
-															isValid={touched.state && !errors.state}
-															isInvalid={errors.state}
-														/>
-
-														<Form.Control.Feedback type="invalid">
-															{errors.state}
-														</Form.Control.Feedback>
-													</Form.Group>
-													<Form.Group
-														as={Col}
-														md="4"
-														controlId="validationFormik05"
-													>
-														<Form.Label>Country</Form.Label>
-														<Form.Control
-															type="text"
-															placeholder="country"
-															name="country"
-															value={values.country}
-															onChange={handleChange}
-															isValid={touched.country && !errors.country}
-															isInvalid={errors.country}
-														/>
-
-														<Form.Control.Feedback type="invalid">
-															{errors.country}
-														</Form.Control.Feedback>
-													</Form.Group>
-													<Form.Group
-														as={Col}
-														md="4"
-														controlId="validationFormik05"
-													>
-														<Form.Label>Zip</Form.Label>
-														<Form.Control
-															type="text"
-															placeholder="Zip"
-															name="zip"
-															value={values.zip}
-															onChange={handleChange}
-															isInvalid={errors.zip}
-															isValid={touched.zip && !errors.zip}
-														/>
-
-														<Form.Control.Feedback type="invalid">
-															{errors.zip}
-														</Form.Control.Feedback>
-													</Form.Group>
-												</Form.Row>
-
-												<Button type="submit">Submit form</Button>
-											</Form>
-										)}
-									</Formik>
+									<DoctorForm
+										validateHandler={this.validateHandler}
+										submitHandler={this.submitHandler}
+										patientValues={{}}
+										text={"Submit"}
+									/>
 								)}
 							</Card.Body>
 						</Card>
 					</div>
+				) : this.state.editToggle ? (
+					//For edit
+					<DoctorForm
+						validateHandler={this.validateHandler}
+						submitHandler={this.editHandler}
+						doctorValues={this.state.values}
+						text={"Update"}
+					/>
 				) : (
 					<div>
-						<Button variant="info" size="lg" block onClick={this.toggleHandler}>
-							Add Doctor
-						</Button>
 						<Table striped bordered hover>
 							<thead>
 								<tr>
@@ -432,6 +283,7 @@ class Doctor extends Component {
 									<th>Name</th>
 									<th>npi</th>
 									<th>Specialty</th>
+									<th>Actions</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -475,6 +327,10 @@ const mapDispatchToProps = (dispatch) => {
 		getDoctors: () => dispatch(actionCreators.getDoctors()),
 		nextList: (pageNo, size) =>
 			dispatch(actionCreators.pagination(pageNo, size)),
+		addDoctorCSV: (formData, config) =>
+			dispatch(actionCreators.addDoctorCSV(formData, config)),
+		registerDoctor: (values) => actionCreators.registerDoctor(values),
+		updateDoctor: (values, index) => actionCreators.updateDoctor(values, index),
 	};
 };
 

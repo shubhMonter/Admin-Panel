@@ -7,7 +7,7 @@ global.jQuery = $;
 
 const DashboardDefault = React.lazy(() => import("./Demo/Dashboard/Default"));
 
-const EditData = React.lazy(() => import("./Demo/EditData/EditData"));
+const Specialty = React.lazy(() => import("./Demo/Other/Specialty/Specialty"));
 const UIBasicButton = React.lazy(() =>
 	import("./Demo/UIElements/Basic/Button")
 );
@@ -53,7 +53,7 @@ const routes = [
 		name: "Default",
 		component: DashboardDefault,
 	},
-	{ path: "/edit-data", exact: true, name: "Edit Data", component: EditData },
+	{ path: "/edit-data", exact: true, name: "Edit Data", component: Specialty },
 	{
 		path: "/basic/button",
 		exact: true,

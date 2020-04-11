@@ -6,13 +6,14 @@ import {
 	Card,
 	Table,
 	Button,
+	Pagination,
 	Form,
 	InputGroup,
 } from "react-bootstrap";
-import Aux from "../../hoc/_Aux";
+import Aux from "../../../hoc/_Aux";
 import { Formik } from "formik";
-import * as actionCreators from "../../store/actions/editData";
-import SpecialtyForm from "../../App/components/specialtyForm";
+import * as actionCreators from "../../../store/actions/editData";
+import SpecialtyForm from "../../../App/components/specialtyForm";
 import cogoToast from "cogo-toast";
 class EditData extends Component {
 	state = {
@@ -143,16 +144,20 @@ class EditData extends Component {
 		}
 	};
 	componentDidMount = () => {
-		this.props.getSpecialty().then(() => {
+		this.props.getSpecialty(this.props.pageNo, this.props.size).then(() => {
 			this.setState({ loading: false });
 		});
 	};
-
+	pageHandler = (page) => {
+		this.props.getSpecialty(page, this.props.size).then(() => {
+			this.setState({ loading: false });
+		});
+	};
 	render() {
 		let data = this.props.specialty.map((item, index) => {
 			return (
 				<tr key={index}>
-					<td>{index + 1}</td>
+					<td>{this.props.pageNo * this.props.size + index + 1}</td>
 					<td>{item.name}</td>
 					<td>{item.speciality_id}</td>
 					<td>{item.procedure_name}</td>
@@ -211,26 +216,44 @@ class EditData extends Component {
 											text={"Update"}
 										/>
 									) : (
-										<Table striped bordered hover size="sm">
-											<thead>
-												<tr>
-													<th>#</th>
-													<th>Name</th>
-													<th>Specialty ID</th>
-													<th>Procedure</th>
-													<th>Action</th>
-												</tr>
-											</thead>
-											<tbody>
-												{this.state.loading ? (
+										<div>
+											<Table striped bordered hover size="sm">
+												<thead>
 													<tr>
-														<td>"Loading"</td>
+														<th>#</th>
+														<th>Name</th>
+														<th>Specialty ID</th>
+														<th>Procedure</th>
+														<th>Action</th>
 													</tr>
-												) : (
-													data
-												)}
-											</tbody>
-										</Table>
+												</thead>
+												<tbody>
+													{this.state.loading ? (
+														<tr>
+															<td>"Loading"</td>
+														</tr>
+													) : (
+														data
+													)}
+												</tbody>
+											</Table>
+											<Pagination>
+												<Pagination.Item
+													onClick={() =>
+														this.pageHandler(this.props.pageNo - 1)
+													}
+												>
+													Prev
+												</Pagination.Item>
+												<Pagination.Item
+													onClick={() =>
+														this.pageHandler(this.props.pageNo + 1)
+													}
+												>
+													Next
+												</Pagination.Item>
+											</Pagination>
+										</div>
 									)}
 								</div>
 							</Card.Body>
@@ -244,12 +267,15 @@ class EditData extends Component {
 
 const mapStateToProps = (state) => {
 	return {
-		specialty: state.editDataReducer.specialty,
+		specialty: state.specialtyReducer.specialty,
+		pageNo: state.specialtyReducer.pageNo,
+		size: state.specialtyReducer.size,
 	};
 };
 const mapDispatchToProps = (dispatch) => {
 	return {
-		getSpecialty: () => dispatch(actionCreators.getSpecialty()),
+		getSpecialty: (pageNo, size) =>
+			dispatch(actionCreators.getSpecialty(pageNo, size)),
 		addSpecialty: (data) => dispatch(actionCreators.addSpecialty(data)),
 		updateSpeciality: (data, index) =>
 			dispatch(actionCreators.updateSpecialty(data, index)),

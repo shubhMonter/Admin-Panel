@@ -1,16 +1,20 @@
 import * as actionTypes from "./actions";
 import Axios from "axios";
 
-export const getPatient = () => {
+export const getPatient = (pageNo, size) => {
 	console.log("get specialty actioncreator");
 	return (dispatch) =>
-		Axios.get("/admin/patient/get").then((result) => {
-			console.log("Data got", result.data.data);
-			dispatch({
-				type: actionTypes.GET_PATIENT,
-				payload: result.data.data,
-			});
-		});
+		Axios.post("/admin/patient/get", { pageNo, size })
+			.then((result) => {
+				console.log("Data got", result.data.data);
+				dispatch({
+					type: actionTypes.GET_PATIENT,
+					payload: result.data.data,
+					pageNo: pageNo,
+					size: size,
+				});
+			})
+			.catch((err) => Promise.reject(err.response.data.message));
 };
 
 export const addPatient = (payload) => {

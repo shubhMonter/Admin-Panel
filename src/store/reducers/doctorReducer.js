@@ -19,6 +19,14 @@ const pageHandler = (state, action) => {
 		doctors: doctors,
 	};
 };
+const update = (state, action) => {
+	let curData = [...state.patient];
+	curData[action.index] = action.payload;
+	return {
+		...state,
+		doctors: curData,
+	};
+};
 const reducer = (state = initialState, action) => {
 	switch (action.type) {
 		case actionTypes.GET_DOCTORS:
@@ -29,6 +37,8 @@ const reducer = (state = initialState, action) => {
 			};
 		case actionTypes.PAGE_HANDLER:
 			return pageHandler(state, action);
+		case actionTypes.UPDATE_DOCTOR:
+			return update(state, action);
 		default:
 			return state;
 	}

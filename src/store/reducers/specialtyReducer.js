@@ -1,9 +1,11 @@
 import * as actionTypes from "../actions/actions";
-import { updateSpecialty } from "../actions/editData";
+import { updateSpecialty, getSpecialty } from "../actions/editData";
 
 const initialState = {
 	// static can't changeS
 	specialty: [],
+	pageNo: 0,
+	size: 10,
 };
 
 const update = (state, action) => {
@@ -11,17 +13,28 @@ const update = (state, action) => {
 	let curdata = [...state.specialty];
 	curdata[action.index] = action.payload;
 	return {
+		...state,
 		specialty: curdata,
+	};
+};
+
+const get = (state, action) => {
+	let data = action.payload;
+	let size = action.size;
+	let pageNo = action.pageNo;
+	return {
+		specialty: data,
+		size,
+		pageNo,
 	};
 };
 const reducer = (state = initialState, action) => {
 	switch (action.type) {
 		case actionTypes.GET_SPECIALTY:
-			return {
-				specialty: action.payload,
-			};
+			return get(state, action);
 		case actionTypes.ADD_SPECIALTY:
 			return {
+				...state,
 				specialty: state.specialty.concat(action.payload),
 			};
 		case actionTypes.UPDATE_SPECIALTY:
