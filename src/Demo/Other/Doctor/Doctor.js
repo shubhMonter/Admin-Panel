@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Col, Table, Button, Form, Card, Nav } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
-import { Formik } from "formik";
 import classes from "./Doctor.module.scss";
 import cogoToast from "cogo-toast";
 // import { Table, Divider, Tag } from "antd";
@@ -10,7 +9,7 @@ import cogoToast from "cogo-toast";
 // import Card from "../../App/components/MainCard";
 import * as actionCreators from "../../../store/actions/doctor";
 import DoctorForm from "../../../App/components/DoctorForm";
-import Axios from "axios";
+import DataTable from "../../../App/components/DataTable";
 
 class Doctor extends Component {
 	state = {
@@ -276,38 +275,15 @@ class Doctor extends Component {
 					/>
 				) : (
 					<div>
-						<Table striped bordered hover>
-							<thead>
-								<tr>
-									<th>#</th>
-									<th>Name</th>
-									<th>npi</th>
-									<th>Specialty</th>
-									<th>Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								{this.state.loading ? (
-									<tr>
-										<td>"Loading"</td>
-									</tr>
-								) : (
-									data
-								)}
-							</tbody>
-						</Table>
-						<Pagination className={classes.pagination}>
-							<Pagination.Item
-								onClick={() => this.pageHandler(this.props.pageNo - 1)}
-							>
-								Prev
-							</Pagination.Item>
-							<Pagination.Item
-								onClick={() => this.pageHandler(this.props.pageNo + 1)}
-							>
-								Next
-							</Pagination.Item>
-						</Pagination>
+						{this.state.loading ? (
+							"Loading"
+						) : (
+							<DataTable
+								header={["#", "Name", "Npi", "Specialty", "Actions"]}
+								pageHandler={this.pageHandler}
+								data={data}
+							/>
+						)}
 					</div>
 				)}
 			</div>

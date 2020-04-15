@@ -1,12 +1,37 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { connect } from "react-redux";
 
 import "./../../../assets/scss/style.scss";
 import Aux from "../../../hoc/_Aux";
 import Breadcrumb from "../../../App/layout/AdminLayout/Breadcrumb";
-import DEMO from "../../../store/actions/constant";
-
+import cogoToast from "cogo-toast";
+import * as actionCreators from "../../../store/actions/authentication";
 class SignUp1 extends React.Component {
+	state = {
+		email: "",
+		password: "",
+	};
+	changeHandler = (event) => {
+		console.log("I came here", this.state);
+		this.setState({
+			[event.target.name]: event.target.value,
+		});
+	};
+	submitHandler = () => {
+		var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+		// console.log(emailPattern.test(this.state.email));
+		if (this.state.email.length === 0 || this.state.password.length === 0) {
+			cogoToast.info("Please fill up all fields");
+		} else if (!emailPattern.test(this.state.email)) {
+			cogoToast.info("Please enter a valid email");
+		} else {
+			this.props
+				.submit(this.state.email, this.state.password)
+				.then(() => cogoToast.success("Successfully logged in"))
+				.catch((err) => cogoToast.error(err));
+		}
+	};
 	render() {
 		return (
 			<Aux>
@@ -25,18 +50,21 @@ class SignUp1 extends React.Component {
 									<i className="feather icon-user-plus auth-icon" />
 								</div>
 								<h3 className="mb-4">Sign up</h3>
-								<div className="input-group mb-3">
+								{/* <div className="input-group mb-3">
 									<input
 										type="text"
 										className="form-control"
 										placeholder="Username"
 									/>
-								</div>
+								</div> */}
 								<div className="input-group mb-3">
 									<input
 										type="email"
 										className="form-control"
 										placeholder="Email"
+										name="email"
+										onChange={this.changeHandler}
+										value={this.state.email}
 									/>
 								</div>
 								<div className="input-group mb-4">
@@ -44,9 +72,12 @@ class SignUp1 extends React.Component {
 										type="password"
 										className="form-control"
 										placeholder="password"
+										name="password"
+										value={this.state.password}
+										onChange={this.changeHandler}
 									/>
 								</div>
-								<div className="form-group text-left">
+								{/* <div className="form-group text-left">
 									<div className="checkbox checkbox-fill d-inline">
 										<input
 											type="checkbox"
@@ -58,8 +89,11 @@ class SignUp1 extends React.Component {
 											weekly.
 										</label>
 									</div>
-								</div>
-								<button className="btn btn-primary shadow-2 mb-4">
+								</div> */}
+								<button
+									className="btn btn-primary shadow-2 mb-4"
+									onClick={this.submitHandler}
+								>
 									Sign up
 								</button>
 								<p className="mb-0 text-muted">
@@ -75,4 +109,10 @@ class SignUp1 extends React.Component {
 	}
 }
 
-export default SignUp1;
+const mapDispatchToProps = (dispatch) => {
+	return {
+		submit: (email, password) =>
+			dispatch(actionCreators.signUp(email, password)),
+	};
+};
+export default connect(null, mapDispatchToProps)(SignUp1);

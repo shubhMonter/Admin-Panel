@@ -5,7 +5,7 @@ import Aux from "../../../hoc/_Aux";
 import * as actionCreators from "../../../store/actions/payment";
 import DataTable from "../../../App/components/DataTable";
 import cogoToast from "cogo-toast";
-class Payment extends Component {
+class Questionnaire extends Component {
 	state = {
 		loading: true,
 	};
@@ -48,7 +48,7 @@ class Payment extends Component {
 					<Col>
 						<Card>
 							<Card.Header>
-								<Card.Title as="h5">Payment</Card.Title>
+								<Card.Title as="h5">Questionnaire</Card.Title>
 							</Card.Header>
 							<Card.Body>
 								<div>
@@ -91,4 +91,4 @@ const mapDispatchToProps = (dispatch) => {
 			dispatch(actionCreators.getPayment(pageNo, size)),
 	};
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Payment);
+export default connect(mapStateToProps, mapDispatchToProps)(Questionnaire);

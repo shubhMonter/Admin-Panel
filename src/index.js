@@ -12,9 +12,10 @@ import doctorReducer from "./store/reducers/doctorReducer";
 import specialtyReducer from "./store/reducers/specialtyReducer";
 import patientReducer from "./store/reducers/patientReducer";
 import paymentReducer from "./store/reducers/paymentReducer";
-import config from "./config";
+import userReducer from "./store/reducers/userReducer";
 
 const rootReducer = combineReducers({
+	userReducer: userReducer,
 	paymentReducer: paymentReducer,
 	patientReducer: patientReducer,
 	specialtyReducer: specialtyReducer,
@@ -29,7 +30,7 @@ const store = createStore(
 
 const app = (
 	<Provider store={store}>
-		<BrowserRouter basename={config.basename}>
+		<BrowserRouter>
 			{/* basename="/datta-able" */}
 			<App />
 		</BrowserRouter>

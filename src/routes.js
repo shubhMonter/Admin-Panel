@@ -46,14 +46,24 @@ const OtherDocs = React.lazy(() => import("./Demo/Other/Docs"));
 
 const PaymentPage = React.lazy(() => import("./Demo/Other/Payment/Payment"));
 
+const QuestionnairePage = React.lazy(() =>
+	import("./Demo/Other/Questionnaire/Questionnaire")
+);
+
 const routes = [
+	{
+		path: "/questionnaire",
+		exact: true,
+		name: "Default",
+		component: QuestionnairePage,
+	},
 	{
 		path: "/dashboard/default",
 		exact: true,
 		name: "Default",
 		component: DashboardDefault,
 	},
-	{ path: "/edit-data", exact: true, name: "Edit Data", component: Specialty },
+	{ path: "/specialty", exact: true, name: "Specialty", component: Specialty },
 	{
 		path: "/basic/button",
 		exact: true,

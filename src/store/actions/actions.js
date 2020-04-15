@@ -24,3 +24,9 @@ export const UPDATE_PATIENT = "UPDATE_PATIENT";
 
 //Payment
 export const GET_PAYMENT = "GET_PAYMENT";
+
+//Authentication
+export const LOGIN = "LOGIN";
+
+//Questionnaire
+export const GET_QUESTIONNAIRE = "GET_QUESTIONNAIRE";

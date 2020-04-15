@@ -1,18 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-	Row,
-	Col,
-	Card,
-	Table,
-	Button,
-	Pagination,
-	Form,
-	InputGroup,
-} from "react-bootstrap";
+import { Row, Col, Card, Table, Button, Pagination } from "react-bootstrap";
 import Aux from "../../../hoc/_Aux";
-import { Formik } from "formik";
 import * as actionCreators from "../../../store/actions/patient";
+import DataTable from "../../../App/components/DataTable";
 import PatientForm from "../../../App/components/PatientForm";
 import cogoToast from "cogo-toast";
 class Patient extends Component {
@@ -226,42 +217,16 @@ class Patient extends Component {
 										/>
 									) : (
 										<div>
-											<Table striped bordered hover>
-												<thead>
-													<tr>
-														<th>#</th>
-														<th>Name</th>
-														<th>Email</th>
-														<th>Phone</th>
-														<th>Action</th>
-													</tr>
-												</thead>
-												<tbody>
-													{this.state.loading ? (
-														<tr>
-															<td>"Loading"</td>
-														</tr>
-													) : (
-														data
-													)}
-												</tbody>
-											</Table>
-											<Pagination>
-												<Pagination.Item
-													onClick={() =>
-														this.pageHandler(this.props.pageNo - 1)
-													}
-												>
-													Prev
-												</Pagination.Item>
-												<Pagination.Item
-													onClick={() =>
-														this.pageHandler(this.props.pageNo + 1)
-													}
-												>
-													Next
-												</Pagination.Item>
-											</Pagination>
+											{this.state.loading ? (
+												"Loading"
+											) : (
+												<DataTable
+													header={["#", "Name", "Email", "Phone", "Action"]}
+													data={data}
+													pageHandler={this.pageHandler}
+													pageNo={this.props.pageNo}
+												/>
+											)}
 										</div>
 									)}
 								</div>

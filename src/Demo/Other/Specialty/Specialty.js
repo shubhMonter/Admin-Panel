@@ -1,20 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-	Row,
-	Col,
-	Card,
-	Table,
-	Button,
-	Pagination,
-	Form,
-	InputGroup,
-} from "react-bootstrap";
+import { Row, Col, Card, Table, Button, Pagination } from "react-bootstrap";
 import Aux from "../../../hoc/_Aux";
-import { Formik } from "formik";
 import * as actionCreators from "../../../store/actions/editData";
 import SpecialtyForm from "../../../App/components/specialtyForm";
+import DataTable from "../../../App/components/DataTable";
 import cogoToast from "cogo-toast";
+
 class EditData extends Component {
 	state = {
 		specialityList: [],
@@ -217,42 +209,22 @@ class EditData extends Component {
 										/>
 									) : (
 										<div>
-											<Table striped bordered hover size="sm">
-												<thead>
-													<tr>
-														<th>#</th>
-														<th>Name</th>
-														<th>Specialty ID</th>
-														<th>Procedure</th>
-														<th>Action</th>
-													</tr>
-												</thead>
-												<tbody>
-													{this.state.loading ? (
-														<tr>
-															<td>"Loading"</td>
-														</tr>
-													) : (
-														data
-													)}
-												</tbody>
-											</Table>
-											<Pagination>
-												<Pagination.Item
-													onClick={() =>
-														this.pageHandler(this.props.pageNo - 1)
-													}
-												>
-													Prev
-												</Pagination.Item>
-												<Pagination.Item
-													onClick={() =>
-														this.pageHandler(this.props.pageNo + 1)
-													}
-												>
-													Next
-												</Pagination.Item>
-											</Pagination>
+											{this.state.loading ? (
+												"Loading"
+											) : (
+												<DataTable
+													header={[
+														"#",
+														"Name",
+														"Specialty ID",
+														"Procedure",
+														"Action",
+													]}
+													data={data}
+													pageHandler={this.pageHandler}
+													pageNo={this.props.pageNo}
+												/>
+											)}
 										</div>
 									)}
 								</div>

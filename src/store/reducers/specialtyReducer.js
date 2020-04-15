@@ -1,5 +1,4 @@
 import * as actionTypes from "../actions/actions";
-import { updateSpecialty, getSpecialty } from "../actions/editData";
 
 const initialState = {
 	// static can't changeS

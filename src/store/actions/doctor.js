@@ -1,5 +1,5 @@
 import * as actionTypes from "./actions";
-import Axios from "axios";
+import Axios from "../../utilities/Axios/Axios";
 
 export const getDoctors = (pageNo, size) => {
 	console.log("get doctors actioncreator");
