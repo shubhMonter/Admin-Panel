@@ -13,8 +13,10 @@ import specialtyReducer from "./store/reducers/specialtyReducer";
 import patientReducer from "./store/reducers/patientReducer";
 import paymentReducer from "./store/reducers/paymentReducer";
 import userReducer from "./store/reducers/userReducer";
+import questionnaireReducer from "./store/reducers/questionnaireReducer";
 
 const rootReducer = combineReducers({
+	questionnaireReducer: questionnaireReducer,
 	userReducer: userReducer,
 	paymentReducer: paymentReducer,
 	patientReducer: patientReducer,

@@ -30,3 +30,5 @@ export const LOGIN = "LOGIN";
 
 //Questionnaire
 export const GET_QUESTIONNAIRE = "GET_QUESTIONNAIRE";
+export const GET_QUESTION = "GET_QUESTION";
+export const UPDATE_QUESTION = "UPDATE_QUESTION";

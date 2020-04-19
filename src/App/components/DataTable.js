@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Pagination } from "react-bootstrap";
 export default function DataTable(props) {
 	const header = props.header.map((head) => {
-		return <th>{head}</th>;
+		return <th key={head}>{head}</th>;
 	});
 	return (
 		<div>
