@@ -294,7 +294,7 @@ class Questionnaire extends Component {
 					<td>{item.specialty}</td>
 					<td>{item.category}</td>
 					<td>
-						{String(item.superQuestion)}
+						{String(item.superQuestion) + "   "}
 						<Button
 							size="sm"
 							variant="warning"
