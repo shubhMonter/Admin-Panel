@@ -27,6 +27,20 @@ const getQuestion = (state, action) => {
 const updateQuestion = (state, action) => {
 	return state;
 };
+
+const switchSuperQuestion = (state, action) => {
+	console.log(action);
+	let ques = { ...state.questionnaire[action.index] };
+	console.log("ques", ques);
+	ques.superQuestion = action.change;
+	console.log("after change", ques);
+	let questionnaire = [...state.questionnaire];
+	questionnaire[action.index] = ques;
+	return {
+		...state,
+		questionnaire: questionnaire,
+	};
+};
 const reducer = (state = initialState, action) => {
 	switch (action.type) {
 		case actionTypes.GET_QUESTIONNAIRE:
@@ -35,6 +49,10 @@ const reducer = (state = initialState, action) => {
 			return getQuestion(state, action);
 		case actionTypes.UPDATE_QUESTION:
 			return updateQuestion(state, action);
+		case actionTypes.ADD_QUESTION:
+			return state;
+		case actionTypes.SWITCH_SUPERQUESTION:
+			return switchSuperQuestion(state, action);
 		default:
 			return state;
 	}

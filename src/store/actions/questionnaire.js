@@ -52,3 +52,42 @@ export const updateQuestion = (data) => {
 				Promise.reject(err);
 			});
 };
+
+export const addQuestion = (data) => {
+	console.log("addQuestion actionCreator");
+	console.log("data", data);
+	return (dispatch) =>
+		Axios.post("/admin/questionnaire/question/add", data)
+			.then((result) => {
+				console.log("Result in action", result);
+				dispatch({
+					type: actionTypes.ADD_QUESTION,
+					payload: result.data.data,
+				});
+				return result.data.data;
+			})
+			.catch((err) => {
+				Promise.reject(err);
+			});
+};
+
+export const switchSuperQuestion = (id, index, change) => {
+	console.log("UpdateQuestion actionCreator");
+	return (dispatch) =>
+		Axios.post("/admin/questionnaire/question/update", {
+			_id: id,
+			superQuestion: change,
+		})
+			.then((result) => {
+				console.log(result);
+				dispatch({
+					type: actionTypes.SWITCH_SUPERQUESTION,
+					index,
+					change,
+				});
+				return result.data.message;
+			})
+			.catch((err) => {
+				Promise.reject(err);
+			});
+};

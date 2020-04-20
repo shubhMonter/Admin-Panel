@@ -16,6 +16,7 @@ const TreeSection = (props) => {
 				tree.children.push({
 					title: option[i].linkedQuestion[j].title,
 					key: option[i].linkedQuestion[j]._id,
+					_id: option[i].linkedQuestion[j]._id,
 					option: option[i].linkedQuestion[j].option,
 					children: [],
 				});
@@ -48,6 +49,7 @@ const TreeSection = (props) => {
 		{
 			title: props.question.title,
 			key: props.question._id,
+			_id: props.question._id,
 			option: props.question.option,
 			children: [],
 		},

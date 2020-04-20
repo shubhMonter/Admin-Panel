@@ -16,8 +16,12 @@ class Questionnaire extends Component {
 		editToggle: false,
 		text: "Add Question",
 		value: {},
-		currentQuestion: {},
+		currentQuestion: {
+			// title:""
+		},
 		index: -1,
+		optionText: "",
+
 		// title: "",
 		// id: "",
 		// option: {},
@@ -52,6 +56,13 @@ class Questionnaire extends Component {
 					text: "See Question",
 					toggle: !this.state.toggle,
 					editToggle: false,
+					currentQuestion: {
+						title: "",
+						option: [],
+						category: "",
+						superQuestion: true,
+						root: true,
+					},
 				});
 			} else if (text === "See Question") {
 				this.setState({
@@ -74,43 +85,66 @@ class Questionnaire extends Component {
 	};
 
 	editHandler = (values) => {
+		console.log("editHandler");
 		// event.preventDefault();
-		console.log(values);
 		let data = this.state.currentQuestion;
-		this.props
-			.updateQuestion(data)
-			.then((result) => {
-				cogoToast.success("Successfully Updated Question");
-				// this.props
-				// 	.getQuestion()
-				// 	.then(() => {
-				// 		cogoToast.success("Fetched Question successfully");
-				// 	})
-				// 	.catch((err) => cogoToast.error(err));
-			})
-			.catch((err) => cogoToast.error(err));
+		if (this.state.currentQuestion._id) {
+			console.log("Without parent");
+			this.props
+				.updateQuestion(data)
+				.then((result) => {
+					cogoToast.success("Successfully Updated Question");
+					// console.log(result);
+					this.props
+						.getQuestion(this.props.question._id)
+						.then((res) => console.log("ok"))
+						.catch((err) => cogoToast.error(err));
+					// this.-
+				})
+				.catch((err) => console.log(err));
+		} else {
+			console.log("With parent");
+			let data = {
+				...this.state.currentQuestion,
+
+				root: false,
+			};
+			this.props
+				.addQuestion(data)
+				.then((result) => {
+					// console.log("with parent", result);
+					cogoToast.success("Successfully added Question");
+					this.setState({
+						"currentQuestion._id": result._id,
+					});
+					this.props
+						.getQuestion(this.props.question._id)
+						.then((res) => console.log("ok"))
+						.catch((err) => console.log(err));
+				})
+				.catch((err) => cogoToast.error(err));
+			console.log("Submit this linked Question");
+		}
 	};
-	submitHandler = (values) => {
-		console.log("submit handler", values);
-		// this.props
-		// 	.addPatient(values)
-		// 	.then((result) => {
-		// 		console.log(result);
-		// 		console.log("done");
-		// 		cogoToast.success("Successfully added patient!");
-		// 		this.toggleHandler();
-		// 	})
-		// 	.catch((err) => {
-		// 		console.log("error", err);
-		// 		cogoToast.error(err);
-		// 	});
-		// Axios.post("/admin/addSpecialty", values)
-		// 	.then(() => console.log("Succesfully added specialty"))
-		// 	.catch((err) => console.log(err));
+	submitHandler = () => {
+		console.log("submitHandler");
+		let data = this.state.currentQuestion;
+		console.log("submit handler", data);
+		this.props
+			.addQuestion(data)
+			.then((result) => {
+				cogoToast.success("Successfully added Question");
+				// this.setState({
+				// 	"currentQuestion._id": result._id,
+				// });
+
+				this.actionHandler(result._id, -1, "Change");
+			})
+			.catch((err) => cogoToast.error("err"));
 	};
 	changeHandler = (event) => {
-		console.log(event.target.name, event.target.value);
-		console.log("I am in change", this.state, event);
+		// console.log(event.target.name, event.target.value);
+		// console.log("I am in change", this.state);
 		let ques = this.state.currentQuestion;
 		let data = event.target.name.split("-");
 		if (data[0] === "optionType") {
@@ -124,7 +158,7 @@ class Questionnaire extends Component {
 				currentQuestion: ques,
 			});
 		} else {
-			ques.title = event.target.value;
+			ques[event.target.name] = event.target.value;
 			this.setState({
 				currentQuestion: ques,
 			});
@@ -132,7 +166,19 @@ class Questionnaire extends Component {
 		// console.log("ChangeHandler", event.target);
 	};
 	actionHandler = (id, index, type) => {
-		if (type === "Delete") {
+		if (type === "Change") {
+			console.log("Change", id, index, type);
+			this.props.getQuestion(id).then(() => {
+				this.setState({
+					currentQuestion: this.props.question,
+					values: this.props.question,
+					toggle: false,
+					editToggle: true,
+					text: "See Table",
+					index: index,
+				});
+			});
+		} else if (type === "Delete") {
 			console.log("delete");
 		} else {
 			this.props.getQuestion(this.props.questionnaire[index]._id).then(() => {
@@ -160,15 +206,15 @@ class Questionnaire extends Component {
 	};
 
 	addOption = () => {
-		console.log("ADd option");
+		console.log("Add option");
 		let curOption = this.state.currentQuestion.option;
 		curOption.push({ optionType: "radio", text: "", linkedQuestion: [] });
 		console.log("CurOption", curOption);
 		this.setState(
 			{
 				"currentQuestion.option": curOption,
-			},
-			console.log("Add Otion", this.state)
+			}
+			// console.log("Add Otion", this.state)
 		);
 	};
 	removeOption = (index) => {
@@ -181,18 +227,84 @@ class Questionnaire extends Component {
 		this.setState(
 			{
 				"currentQuestion.option": data,
-			},
-			console.log(this.state.currentQuestion)
+			}
+			// console.log(this.state.currentQuestion)
 		);
 	};
+
+	newQuestionHandler = () => {
+		console.log("New Question Handler");
+	};
+
+	linkedChangeHandler = (event) => {
+		console.log(event.target.value);
+		this.setState(
+			{
+				optionText: event.target.value,
+			}
+			// console.log(this.state)
+		);
+	};
+
+	linkedQuestionHandler = () => {
+		if (this.state.currentQuestion._id) {
+			let text = "";
+			if (this.state.optionText === "") {
+				text = this.state.currentQuestion.option[0].text;
+			} else {
+				text = this.state.optionText;
+			}
+			let data = {
+				parent: this.state.currentQuestion._id,
+				title: "",
+				option: [],
+				optionText: text,
+			};
+			// console.log("This data", data);
+			this.setState(
+				{
+					currentQuestion: data,
+				}
+				// console.log(this.state)
+			);
+		} else {
+			cogoToast.info(
+				"Please submit  question, Before adding any other linked Question "
+			);
+		}
+
+		console.log("Linked Question Handler");
+	};
+
+	switchHandler = (id, index, type) => {
+		this.props
+			.switchSuperQuestion(id, index, !type)
+			.then((result) => {
+				cogoToast.success("Successfully updated superQuestion");
+			})
+			.catch((err) => cogoToast.error(err));
+	};
 	render() {
-		let data = (this.props.questionnaire || []).map((item, index) => {
+		let TableData = (this.props.questionnaire || []).map((item, index) => {
+			console.log("table", item);
 			return (
 				<tr key={index}>
 					<td>{this.props.size * this.props.pageNo + index + 1}</td>
 					<td>{item.title}</td>
-					<td>{item.speciality}</td>
+					<td>{item.specialty}</td>
 					<td>{item.category}</td>
+					<td>
+						{String(item.superQuestion)}
+						<Button
+							size="sm"
+							variant="warning"
+							onClick={() =>
+								this.switchHandler(item._id, index, item.superQuestion)
+							}
+						>
+							Switch
+						</Button>
+					</td>
 					<td>
 						<Button
 							size="sm"
@@ -233,11 +345,23 @@ class Questionnaire extends Component {
 								<div>
 									{this.state.toggle ? (
 										<Row>
-											<Col md={3}>
-												"Tree"
+											<Col md={4}>
+												{/* <TreeSection
+													question={this.props.newQuestion}
+													onSelectHandler={this.onSelectHandler}
+												/> */}
 												{/* <TreeSection question={this.state.questionnaire} /> */}
 											</Col>
-											<Col md={9}>"Form"</Col>
+											<Col md={8}>
+												<QuestionnaireForm
+													formValues={this.state.currentQuestion}
+													changeHandler={this.changeHandler}
+													submitHandler={this.submitHandler}
+													addOption={this.addOption}
+													removeOption={this.removeOption}
+													text="Submit"
+												/>
+											</Col>
 										</Row>
 									) : //For new patient
 									// <PatientForm
@@ -258,7 +382,10 @@ class Questionnaire extends Component {
 												<QuestionnaireForm
 													formValues={this.state.currentQuestion}
 													changeHandler={this.changeHandler}
+													linkedChangeHandler={this.linkedChangeHandler}
 													submitHandler={this.editHandler}
+													linkedQuestionHandler={this.linkedQuestionHandler}
+													newQuestionHandler={this.newQuestionHandler}
 													addOption={this.addOption}
 													removeOption={this.removeOption}
 													text="Update"
@@ -283,9 +410,10 @@ class Questionnaire extends Component {
 														"Question",
 														"Specialty",
 														"Category",
+														"Super Question",
 														"Action",
 													]}
-													data={data}
+													data={TableData}
 													pageHandler={this.pageHandler}
 													pageNo={this.props.pageNo}
 												/>
@@ -316,6 +444,9 @@ const mapDispatchToProps = (dispatch) => {
 			dispatch(actionCreators.getQuestionnaire(pageNo, size)),
 		getQuestion: (id) => dispatch(actionCreators.getQuestion(id)),
 		updateQuestion: (data) => dispatch(actionCreators.updateQuestion(data)),
+		addQuestion: (data) => dispatch(actionCreators.addQuestion(data)),
+		switchSuperQuestion: (id, index, type) =>
+			dispatch(actionCreators.switchSuperQuestion(id, index, type)),
 	};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Questionnaire);
